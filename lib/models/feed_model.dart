@@ -12,6 +12,7 @@ class FeedModel {
   String lorem = faker.lorem.sentences(5).join(' ');
   String imageUrl =
       faker.image.image(width: 680, keywords: ['people'], random: true);
+  int likesCounter = faker.randomGenerator.integer(25);
 
   // Geração de lista de comentários para a tela de detalhes
   List<Map<String, String>> comentarios = List.generate(
