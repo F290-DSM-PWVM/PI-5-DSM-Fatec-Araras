@@ -63,7 +63,7 @@ class FeedItem extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.favorite),
-              label: const Text('Curtir'),
+              label: Text('${feedModel.likesCounter} Curtir'),
             ),
             TextButton.icon(
               onPressed: () {
