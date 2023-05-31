@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
+import 'pages/login/login_page.dart';
+import 'pages/login/textfield_page.dart';
 import 'pages/second_page.dart';
 import 'pages/third_page.dart';
 
@@ -21,7 +23,7 @@ class App extends StatelessWidget {
         ),
       ),
       routes: {
-        '/': (context) => const HomePage(),
+        '/': (context) => const LoginPage(),
         '/second': (context) => const SecondPage(),
         '/third': (context) => const ThirdPage(),
       },
