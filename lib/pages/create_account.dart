@@ -158,7 +158,6 @@ class _CreateAccountState extends State<CreateAccount> {
                 child: RichText(
                   text: TextSpan(
                     text: 'Já possui conta? ',
-                    style: const TextStyle(color: Colors.white),
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Faça login',
@@ -182,10 +181,72 @@ class _CreateAccountState extends State<CreateAccount> {
     );
   }
 
+  void _msgValidacao(String msg, String msgTitle) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(msgTitle),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
+  void _validateEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$',
+    );
+
+    if (!emailRegex.hasMatch(email)) {
+      _msgValidacao(
+          'O campo E-mail não contém um e-mail válido', 'Falha ao cadastrar');
+    }
+  }
+
   void _registerUser(context) async {
     final email = _emailController.text;
     final name = _fullNameController.text;
     final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    final responseMail =
+        await supabase.from('users').select('*').eq('email', email);
+
+    if (responseMail.isNotEmpty) {
+      _msgValidacao(
+          'O e-mail informado já está sendo utilizado por outro usuário',
+          'Falha ao cadastrar');
+      return;
+    }
+
+    if (name.isEmpty) {
+      _msgValidacao('O campo Nome deve ser preenchido', 'Falha ao cadastrar');
+      return;
+    }
+
+    if (email.isEmpty) {
+      _msgValidacao('O campo E-mail deve ser preenchido', 'Falha ao cadastrar');
+      _validateEmail(email);
+      return;
+    }
+
+    if (password.isEmpty || confirmPassword.isEmpty) {
+      _msgValidacao(
+          'Ambos campos de senha ser preenchido', 'Falha ao cadastrar');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _msgValidacao(
+          'As senhas informadas não correspondem', 'Senhas inválidas');
+      return;
+    }
 
     final encryptedPassword = encryptPassword(password);
 

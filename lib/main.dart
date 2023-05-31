@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'pages/login_page.dart';
-import 'pages/second_page.dart';
+import 'pages/feed_page.dart';
 import 'pages/third_page.dart';
 import 'pages/create_account.dart';
+import 'pages/create_post.dart';
 
 void main() {
   Supabase.initialize(
@@ -22,30 +23,20 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF0389A6),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: const Color(0xFFDEA74D),
-          ),
+        // useMaterial3: true,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.orange,
+          accentColor: const Color(0xFF0389A6),
         ),
-        inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white,
-          labelStyle: TextStyle(color: Color(0xFFDEA74D)),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0xFFDEA74D),
-              width: 1,
-            ),
-          ),
-        ),
+        scaffoldBackgroundColor: Colors.grey.shade100,
       ),
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => const LoginPage(),
-        '/second': (context) => const SecondPage(),
+        '/feed': (context) => const FeedPage(),
         '/third': (context) => const ThirdPage(),
         '/new-account': (context) => const CreateAccount(),
+        '/create-post': (context) => const CreatePost(),
       },
     );
   }
