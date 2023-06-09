@@ -74,8 +74,8 @@ class FeedItem extends StatelessWidget {
                   image: NetworkImage(feedModel.imageUrl),
                 ),
               ),
-              child: Stack(
-                children: const [
+              child: const Stack(
+                children: [
                   Align(
                     alignment: Alignment.center,
                     child: Icon(

@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'pages/login_page.dart';
 import 'pages/feed_page.dart';
-import 'pages/third_page.dart';
+import 'pages/user_settings.dart';
 import 'pages/create_account.dart';
 import 'pages/create_post.dart';
 
@@ -34,7 +34,7 @@ class App extends StatelessWidget {
       routes: {
         '/': (context) => const LoginPage(),
         '/feed': (context) => const FeedPage(),
-        '/third': (context) => const ThirdPage(),
+        '/user-settings': (context) => const UserSettings(),
         '/new-account': (context) => const CreateAccount(),
         '/create-post': (context) => const CreatePost(),
       },
