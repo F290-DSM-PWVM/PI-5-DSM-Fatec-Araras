@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'pages/login_page.dart';
-import 'pages/feed_page.dart';
-import 'pages/third_page.dart';
-import 'pages/create_account.dart';
-import 'pages/create_post.dart';
+import 'pages/login/login_page.dart';
+import 'pages/feed/feed_page.dart';
+import 'pages/user/user_settings_page.dart';
+import 'pages/user/create_account_page.dart';
+import 'pages/post/create_post_page.dart';
 
-void main() {
-  Supabase.initialize(
-    url: 'https://opzvcrtfywzautcttqtc.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wenZjcnRmeXd6YXV0Y3R0cXRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODMwNjk4NzQsImV4cCI6MTk5ODY0NTg3NH0.ryIUtPCfhd0gbZSxq60HmyAkhjKxuSuTvx2jrQt_MTM',
-  );
+Future<void> main() async {
+  await dotenv.load(fileName: '.env');
+  final supabaseUrl = dotenv.env['SUPABASE_URL']!;
+  final supabaseKey = dotenv.env['SUPABASE_KEY']!;
+
+  WidgetsFlutterBinding.ensureInitialized();
+  Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   runApp(const App());
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,9 @@ class App extends StatelessWidget {
       routes: {
         '/': (context) => const LoginPage(),
         '/feed': (context) => const FeedPage(),
-        '/third': (context) => const ThirdPage(),
-        '/new-account': (context) => const CreateAccount(),
-        '/create-post': (context) => const CreatePost(),
+        '/user-settings': (context) => const UserSettingsPage(),
+        '/new-account': (context) => const CreateAccountPage(),
+        '/create-post': (context) => const CreatePostPage(),
       },
     );
   }

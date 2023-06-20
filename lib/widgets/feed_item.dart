@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../models/feed_model.dart';
-import '../pages/detail_page.dart';
+import '../pages/feed/detail_page.dart';
 
 class FeedItem extends StatelessWidget {
   const FeedItem({
