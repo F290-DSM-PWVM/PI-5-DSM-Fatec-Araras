@@ -185,8 +185,8 @@ class _LoginPageState extends State<LoginPage> {
     final response = await supabase
         .from('users')
         .select('*')
-        .eq('email', email)
-        .eq('password', encryptedPassword)
+        .match({'email': email, 'password': encryptedPassword})
+        .limit(1)
         .single();
 
     if (response.isNotEmpty) {

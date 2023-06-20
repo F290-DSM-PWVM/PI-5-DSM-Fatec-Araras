@@ -70,7 +70,7 @@ class _FeedPageState extends State<FeedPage> {
               title: const Text('Configurações'),
               leading: const Icon(Icons.settings),
               onTap: () {
-                // Adicione aqui o código para lidar com a opção "Configurações"
+                Navigator.pushNamed(context, '/user-settings');
               },
             ),
             ListTile(
