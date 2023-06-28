@@ -1,15 +1,15 @@
 class CategoriesModel {
   int id = 0;
   String name = '';
-  String insertedAt = '';
-  String updatedAt = '';
+  String? insertedAt = '';
+  String? updatedAt = '';
   String? icon = '';
 
   CategoriesModel({
     required this.id,
     required this.name,
-    required this.insertedAt,
-    required this.updatedAt,
+    this.insertedAt,
+    this.updatedAt,
     this.icon,
   });
 

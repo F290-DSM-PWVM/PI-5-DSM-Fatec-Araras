@@ -1,7 +1,8 @@
+import 'package:f290_pi_5/models/posts_model.dart';
+import 'package:f290_pi_5/repositories/posts_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../models/feed_model.dart';
 import '../../widgets/feed_item.dart';
 
 class FeedPage extends StatefulWidget {
@@ -12,27 +13,50 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  static final List<FeedModel> feed = List.generate(2, (index) => FeedModel());
+  PostsRepository postsRepository = PostsRepository();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<PostsModel> posts = List.empty();
+  int userId = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPosts();
+    loadUserId();
+  }
+
+  Future<void> loadPosts() async {
+    final fetchedPosts = await postsRepository.findAll();
+    setState(() {
+      posts = fetchedPosts;
+    });
+  }
+
+  Future<void> loadUserId() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      userId = preferences.getInt('user_id') ?? 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Bulletin board'),
+        title: const Text('Bulletin Board'),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-          ),
-        ],
+        // actions: <Widget>[
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: const Icon(Icons.search),
+        //   ),
+        // ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -122,10 +146,12 @@ class _FeedPageState extends State<FeedPage> {
             child: ListView.builder(
               itemBuilder: (context, index) {
                 return FeedItem(
-                  feedModel: feed[index],
+                  postsModel: posts[index],
+                  userId: userId,
+                  repository: postsRepository,
                 );
               },
-              itemCount: feed.length,
+              itemCount: posts.length,
             ),
           ),
         ],

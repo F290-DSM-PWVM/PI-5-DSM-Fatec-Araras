@@ -33,7 +33,10 @@ class PostsRepository {
   }
 
   Future<List<PostsModel>> findAll() async {
-    final response = await supabase.from('posts').select('*');
+    final response = await supabase
+        .from('posts')
+        .select('*, users(*), post_likes(*), comments(*)')
+        .order('id', ascending: false);
 
     final posts =
         response.map<PostsModel>((p) => PostsModel.fromJson(p)).toList();
@@ -42,7 +45,10 @@ class PostsRepository {
   }
 
   Future<List<PostsModel>> findOne(int id) async {
-    final response = await supabase.from('posts').select('*').eq('id', id);
+    final response = await supabase
+        .from('posts')
+        .select('*, users(*), post_likes(*), comments(*)')
+        .eq('id', id);
 
     final posts =
         response.map<PostsModel>((p) => PostsModel.fromJson(p)).toList();

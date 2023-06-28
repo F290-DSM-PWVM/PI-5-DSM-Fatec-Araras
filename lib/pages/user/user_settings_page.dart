@@ -62,159 +62,164 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: itemsWidth,
-                  child: TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'E-mail',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Para continuar, informe seu e-mail';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: itemsWidth,
-                  child: TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nome Completo',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira seu nome';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: itemsWidth,
-                  child: TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Senha',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira sua senha';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: itemsWidth,
-                  child: TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirmar Senha',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, repita seu nome';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  height: 40.0,
-                  width: itemsWidth,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      saveUserData(context);
-                    },
-                    child: const Text('Salvar'),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  height: 40.0,
-                  width: itemsWidth,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Confirmação'),
-                          content: const Text(
-                              'Tem certeza de que deseja apagar sua conta?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Fechar o modal
-                              },
-                              child: const Text('Cancelar'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.of(context).pop(); // Fechar o modal
-                                confirmDeleteAccount(); // Chamar a função de exclusão da conta
-                              },
-                              child: const Text('Confirmar'),
-                            ),
-                          ],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: itemsWidth,
+                      child: TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'E-mail',
+                          border: OutlineInputBorder(),
                         ),
-                      );
-                    },
-                    child: const Text('Apagar conta'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Para continuar, informe seu e-mail';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: itemsWidth,
+                      child: TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Nome Completo',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira seu nome';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: itemsWidth,
+                      child: TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Senha',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira sua senha';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: itemsWidth,
+                      child: TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Confirmar Senha',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, repita seu nome';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      height: 40.0,
+                      width: itemsWidth,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          saveUserData(context);
+                        },
+                        child: const Text('Salvar'),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      height: 40.0,
+                      width: itemsWidth,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Confirmação'),
+                              content: const Text(
+                                'Tem certeza de que deseja apagar sua conta?',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    confirmDeleteAccount();
+                                  },
+                                  child: const Text('Confirmar'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: const Text('Apagar conta'),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -323,11 +328,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   }
 
   String encryptPassword(String password) {
-    // Implemente sua lógica de criptografia da senha aqui
-    // Pode ser usado algum algoritmo de hash, como bcrypt ou PBKDF2
-    // Certifique-se de usar uma biblioteca de criptografia confiável
-    // Neste exemplo, vamos usar uma criptografia simples para fins de demonstração
-    return password
-        .toUpperCase(); // Criptografia simples: converter para maiúsculas
+    return password.toUpperCase();
   }
 }

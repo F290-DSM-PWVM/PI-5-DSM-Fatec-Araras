@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class FullScreenImage extends StatelessWidget {
-  final String imageUrl;
+  final Uint8List imageUrl;
 
   const FullScreenImage({super.key, required this.imageUrl});
 
@@ -9,7 +11,7 @@ class FullScreenImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Imagem'),
+        title: const Text('Bulletin Board'),
       ),
       body: GestureDetector(
         onTap: () {
@@ -18,10 +20,20 @@ class FullScreenImage extends StatelessWidget {
         child: Container(
           color: Colors.black,
           child: Center(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.contain,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: MemoryImage(imageUrl),
+                ),
+              ),
             ),
+
+            // Image.network(
+            //   imageUrl,
+            //   fit: BoxFit.contain,
+            // ),
           ),
         ),
       ),

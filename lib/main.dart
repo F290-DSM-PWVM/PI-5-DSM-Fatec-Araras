@@ -1,3 +1,5 @@
+import 'package:f290_pi_5/pages/post/edit_post_page.dart';
+import 'package:f290_pi_5/pages/post/view_post_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -39,6 +41,14 @@ class App extends StatelessWidget {
         '/user-settings': (context) => const UserSettingsPage(),
         '/new-account': (context) => const CreateAccountPage(),
         '/create-post': (context) => const CreatePostPage(),
+        '/edit-post': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map;
+          return EditPostPage(postModel: args['postModel']);
+        },
+        '/view-post': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map;
+          return ViewPostPage(postModel: args['postModel']);
+        }
       },
     );
   }

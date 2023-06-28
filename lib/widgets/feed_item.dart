@@ -1,35 +1,44 @@
+import 'package:f290_pi_5/models/post_likes_model.dart';
+import 'package:f290_pi_5/models/posts_model.dart';
+import 'package:f290_pi_5/repositories/post_likes_repository.dart';
+import 'package:f290_pi_5/repositories/posts_repository.dart';
 import 'package:f290_pi_5/widgets/full_screen_image.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import '../models/feed_model.dart';
-import '../pages/feed/detail_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class FeedItem extends StatelessWidget {
   const FeedItem({
     Key? key,
-    required this.feedModel,
+    required this.postsModel,
+    required this.userId,
+    required this.repository,
   }) : super(key: key);
 
-  final FeedModel feedModel;
-
+  final PostsModel postsModel;
+  final int userId;
+  final PostsRepository repository;
   String get timeagoFormatted {
-    // DateTime dateTime = DateTime.parse(feedModel.data);
-    DateTime dateTime = DateTime.now().subtract(const Duration(minutes: 15));
+    DateTime dateTime = DateTime.parse(postsModel.insertedAt!);
     return timeago.format(dateTime, locale: 'en_short');
   }
 
   void _openImageFullScreen(BuildContext context) {
+    final bytes = base64Decode(postsModel.avatar);
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FullScreenImage(imageUrl: feedModel.imageUrl),
+        builder: (context) => FullScreenImage(imageUrl: bytes),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bytes = base64Decode(postsModel.avatar);
+
     return Card(
       elevation: 3,
       margin: const EdgeInsets.all(12.0),
@@ -39,7 +48,7 @@ class FeedItem extends StatelessWidget {
             title: Row(
               children: [
                 Text(
-                  'de ${feedModel.name}',
+                  'de ${postsModel.user?.fullName}',
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
                   ),
@@ -55,12 +64,64 @@ class FeedItem extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Text(timeagoFormatted),
+                if (userId == postsModel.userId) ...[
+                  const Spacer(),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'editar') {
+                        Navigator.pushNamed(
+                          context,
+                          '/edit-post',
+                          arguments: <String, PostsModel>{
+                            'postModel': postsModel
+                          },
+                        );
+                      } else if (value == 'excluir') {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Confirmação'),
+                              content: const Text('Deseja excluir o post?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    repository.delete(postsModel.id);
+                                    //Navigator.of(context).pop();
+                                    Navigator.pushNamed(context, '/feed');
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem<String>(
+                        value: 'editar',
+                        child: Text('Editar'),
+                      ),
+                      const PopupMenuItem<String>(
+                        value: 'excluir',
+                        child: Text('Excluir'),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Text(feedModel.lorem),
+            child: Text(postsModel.description),
           ),
           InkWell(
             onTap: () => _openImageFullScreen(context),
@@ -71,11 +132,11 @@ class FeedItem extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 image: DecorationImage(
                   fit: BoxFit.contain,
-                  image: NetworkImage(feedModel.imageUrl),
+                  image: MemoryImage(bytes),
                 ),
               ),
-              child: const Stack(
-                children: [
+              child: Stack(
+                children: const [
                   Align(
                     alignment: Alignment.center,
                     child: Icon(
@@ -100,14 +161,20 @@ class FeedItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 child: TextButton.icon(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => Container(height: 200),
-                    );
+                  onPressed: () async {
+                    List<PostLikesModel>? likes =
+                        postsModel.postLikes ?? List.empty();
+
+                    bool alreadyLiked = await _checkUserLiked(likes);
+
+                    if (alreadyLiked) {
+                      _likePost(postsModel.id);
+                    } else {
+                      _unlikePost(postsModel.id);
+                    }
                   },
                   icon: const Icon(Icons.arrow_circle_up),
-                  label: Text('${feedModel.likesCounter} Curtidas'),
+                  label: Text('${postsModel.postLikes?.length} Curtidas'),
                 ),
               ),
               Container(
@@ -120,11 +187,10 @@ class FeedItem extends StatelessWidget {
                 ),
                 child: TextButton.icon(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPage(feedModel: feedModel),
-                      ),
+                      '/view-post',
+                      arguments: <String, PostsModel>{'postModel': postsModel},
                     );
                   },
                   icon: const Icon(Icons.chat_bubble),
@@ -136,5 +202,29 @@ class FeedItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<bool> _checkUserLiked(List<PostLikesModel> likes) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int userId = preferences.getInt('user_id') ?? 0;
+
+    return likes.any((like) => like.userId == userId);
+  }
+
+  void _likePost(int postId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int userId = preferences.getInt('user_id') ?? 0;
+    PostLikesRepository likesRepository = PostLikesRepository();
+
+    PostLikesModel like = PostLikesModel(id: 0, userId: userId, postId: postId);
+    await likesRepository.create(like);
+  }
+
+  void _unlikePost(int postId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    int userId = preferences.getInt('user_id') ?? 0;
+    PostLikesRepository likesRepository = PostLikesRepository();
+
+    likesRepository.dislike(userId, postId);
   }
 }
